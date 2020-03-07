@@ -187,7 +187,7 @@ async function main() {
             let employeedelQuery =  await db.query( "DELETE FROM employee WHERE first_name = ? & last_name = ?", [firstNameDelete, lastNameDelete]);
             console.log(employeedelQuery);
            
-        };
+        };  
 
         if(employeeTrackerData.select == 'update employee role'){
             const updateEmployee = await inquirer.prompt([
@@ -196,14 +196,20 @@ async function main() {
                     name: 'updatefullname',
                     choices: employeeRoleArr
                 }, 
+                {
+                    type: 'input',
+                    name: 'newRole',
+                    choices: "type a role to be updated to?"
+                }        
             ]);
             console.log(updateEmployee.updatefullname);
             let splitUpdateEmployee = updateEmployee.updatefullname.split(" ");
             let empFirstName = splitUpdateEmployee[0];
             let empSecondName = splitUpdateEmployee[1];
             
-            let updateEmployeeRole = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-                console.table(updateRole);
+            let updateRole = await db.query(`UPDATE role left join employee ON employee.role_id = Role.id SET role.title = "updateEmployee.newRole" where first_name = "?",` [empFirstName])
+            console.table(updateRole);
+            
         };
         if(employeeTrackerData.select == 'update employee manager'){
             let updateManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
