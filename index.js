@@ -114,29 +114,55 @@ async function main() {
            
             if(employeeDepartmentQuery == "Quality Testing"){
                 employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Quality Testing';`)
+                console.log(employeeDepartmentQuery);
             }
-            console.log(employeeDepartmentQuery);
+            
             if(employeeDepartmentQuery == "sales"){
                 employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'sales';`)
+                console.log(employeeDepartmentQuery);
             }
-            console.log(employeeDepartmentQuery);
+            
             if(employeeDepartmentQuery == "Accounts"){
                 employeeDepartmentQuery = await db.qerry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Accounts';`)
+                console.log(employeeDepartmentQuery);
             }
-            console.log(employeeDepartmentQuery);
+           
             if(employeeDepartmentQuery == "human resource"){
                 employeeDepartmentQuery = await db.qerry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'human resource';`)
-            }
-            console.log(employeeDepartmentQuery);
-            
+                console.log(employeeDepartmentQuery);
+            }   
         };
-        if(employeeTrackerData.select == 'view all employees by manager'){
-            let employeeManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-                console.table(employeeManager);
-        };
+        // if(employeeTrackerData.select == 'view all employees by manager'){
+        //     let employeeManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
+        //         console.table(employeeManager);
+        // };
         if(employeeTrackerData.select == 'add employee'){
-            let addEmployee = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-                console.table(addEmployee);
+            let addEmployeeQuerydb;
+            const addEmployee = await inquirer.prompt([
+            {
+                type: 'input',
+                name: 'firstname',
+                message: 'Whats the first name of the employee?'    
+            }, 
+            {
+                type: 'input',
+                name: 'lastname',
+                message: 'Whats the last name of the employee?'    
+            }, 
+            {
+                type: 'input',
+                name: 'roleid',
+                message: 'Whats the employee role_id?'    
+            }, 
+            {
+                type: 'input',
+                name: 'managerid',
+                message: 'Whats the employee manager_id?'    
+            },
+        ]);
+        addEmployeeQuerydb = await db.qerry ("INSERT INTO employee(`first_name`, `last_name`, `role_id`, `manager_id`)`) VALUES('?','?','?','?')", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid];)
+                console.log(employeeDepartmentQuery);
+            
         };
         if(employeeTrackerData.select == 'remove employee'){
             let removeEmployee = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
