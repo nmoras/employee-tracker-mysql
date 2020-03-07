@@ -167,7 +167,7 @@ async function main() {
                 message: 'Whats the employee manager_id?'    
             },
         ]);
-        addEmployeeQuerydb = await db.qerry ("INSERT INTO employee(`first_name`, `last_name`, `role_id`, `manager_id`)`) VALUES('?','?','?','?')", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid];)
+        addEmployeeQuerydb = await db.qerry ("INSERT INTO employee(`first_name`, `last_name`, `role_id`, `manager_id`)`) VALUES('?','?','?','?')", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid])
             console.log(addEmployeeQuerydb);
             
         };
@@ -212,8 +212,29 @@ async function main() {
             
         };
         if(employeeTrackerData.select == 'update employee manager'){
-            let updateManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-                console.table(updateManager);
+            manageridArr = [];
+            let managerList = await db.querry(`SELECT manager_id AS 'Managerlist' FROM employee; `)
+            for ( i = 0; i < managerList.length; i++  );
+            manageridArrr.push(managerList[i].Managerlist)
+            const updateManager = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employeefullname',
+                message: 'choose employee',
+                choices: employeeRoleArr
+            },
+            {
+                type: 'input',
+                name: 'newManager',
+                message: 'choose new manager_id',
+                choices: manageridArr
+            }        
+        ]);
+            let newManagerid = updateManager.newManager;
+            let splitNewManager = updateManager.employeefullname.split(" ");
+            let firstNameEmp = splitNewManager[0];
+            let updateManager = await db.query( `UPDATE employee SET manager_id = newManagerid where first_name = "?";` [firstNameEmp] )
+            console.table(updateManager);
         };
 
 
