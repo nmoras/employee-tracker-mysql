@@ -161,15 +161,34 @@ async function main() {
             },
         ]);
         addEmployeeQuerydb = await db.qerry ("INSERT INTO employee(`first_name`, `last_name`, `role_id`, `manager_id`)`) VALUES('?','?','?','?')", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid];)
-                console.log(employeeDepartmentQuery);
+            console.log(addEmployeeQuerydb);
             
         };
         if(employeeTrackerData.select == 'remove employee'){
-            let removeEmployee = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-                console.table(removeEmployee);
+            let employeeNameArr = [];
+            let concatEmployeeName = await db.query(`SELECT CONCAT(first_name, ' ', last_name) AS 'Fullname' FROM employee;`)
+            console.log(concatEmployeeName);
+            for(let i=0; i < concatEmployeeName.length; i++){
+                employeeNameArr.push(concatEmployeeName[i].Fullname);
+            }
+            const employeedel = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'select',
+                    choices: employeeNameArr
+                }, 
+            ]);
+            console.log(employeedel);
+            let employeedelsplit = employeedel.split(" ");
+            let firstNameDelete = (employeedelsplit[0]);
+            let lastNameDelete = (employeedelsplit[1]);
+            let employeedelQuery =  await db.query( "DELETE FROM employee WHERE first_name = ? & last_name = ?", [firstNameDelete, lastNameDelete]);
+            console.log(employeedelQuery);
+           
         };
+
         if(employeeTrackerData.select == 'update employee role'){
-            let updateRole = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
+            let updateEmployeeRole = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
                 console.table(updateRole);
         };
         if(employeeTrackerData.select == 'update employee manager'){
