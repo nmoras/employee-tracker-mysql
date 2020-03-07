@@ -60,33 +60,96 @@ async function main() {
             console.table(employeeTable);
     }
     if(employeeTrackerData.select == 'view all employee by role'){
-        let employeeRole = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-            console.table(employeeRole);
+        let employeeRoleQuerydb;
+        const emplyeeRoleQuery = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'select',
+                choices: [  'Software Engineer', 
+                            'Quality Engineer',
+                            'Lead Developer',
+                            'Lead Sales',
+                            'Accountant'
+                        ],    
+            }, 
+        ]);
+        
+        if(emplyeeRoleQuery == "Software Engineer"){
+            employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Software Engineer';`)
+            console.log(employeeRoleQuerydb);
+        };
+        
+        if(emplyeeRoleQuery == "Quality Engineer"){ 
+            employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Quality Engineer';`)
+            console.log(employeeRoleQuerydb);
+        };
+        if(emplyeeRoleQuery == "Sales Lead"){ 
+            employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Sales Lead';`)
+            console.log(employeeRoleQuerydb);
+        };
+        if(emplyeeRoleQuery == "Accountant"){ 
+            employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Accountant';`)
+            console.log(employeeRoleQuerydb);
+        };
     };
+
     if(employeeTrackerData.select == 'view all employee by department'){
-        let employeeDepartment = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-            console.table(employeeDepartment);
-    };
-    if(employeeTrackerData.select == 'view all employees by manager'){
-        let employeeManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-            console.table(employeeManager);
-    };
-    if(employeeTrackerData.select == 'add employee'){
-        let addEmployee = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-            console.table(addEmployee);
-    };
-    if(employeeTrackerData.select == 'remove employee'){
-        let removeEmployee = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-            console.table(removeEmployee);
-    };
-    if(employeeTrackerData.select == 'update employee role'){
-        let updateRole = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-            console.table(updateRole);
-    };
-    if(employeeTrackerData.select == 'update employee manager'){
-        let updateManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
-            console.table(updateManager);
-    };
+        let employeeDepartmentQuerydb;
+        const employeeDepartmentQuery = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'select',
+                    choices: [  'software development', 
+                                'Quality Testing',
+                                'sales',
+                                'Accounts',
+                                'human resource'
+                            ],    
+                }, 
+            ]);
+            if(employeeDepartmentQuery == "software development"){
+                employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'software development';`)
+                console.log(employeeDepartmentQuery);
+            }
+           
+            if(employeeDepartmentQuery == "Quality Testing"){
+                employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Quality Testing';`)
+            }
+            console.log(employeeDepartmentQuery);
+            if(employeeDepartmentQuery == "sales"){
+                employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'sales';`)
+            }
+            console.log(employeeDepartmentQuery);
+            if(employeeDepartmentQuery == "Accounts"){
+                employeeDepartmentQuery = await db.qerry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Accounts';`)
+            }
+            console.log(employeeDepartmentQuery);
+            if(employeeDepartmentQuery == "human resource"){
+                employeeDepartmentQuery = await db.qerry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'human resource';`)
+            }
+            console.log(employeeDepartmentQuery);
+            
+        };
+        if(employeeTrackerData.select == 'view all employees by manager'){
+            let employeeManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
+                console.table(employeeManager);
+        };
+        if(employeeTrackerData.select == 'add employee'){
+            let addEmployee = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
+                console.table(addEmployee);
+        };
+        if(employeeTrackerData.select == 'remove employee'){
+            let removeEmployee = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
+                console.table(removeEmployee);
+        };
+        if(employeeTrackerData.select == 'update employee role'){
+            let updateRole = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
+                console.table(updateRole);
+        };
+        if(employeeTrackerData.select == 'update employee manager'){
+            let updateManager = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
+                console.table(updateManager);
+        };
 
 
     
@@ -119,4 +182,4 @@ async function main() {
 
 }
 main();
-module.exports = { db } ;
+// module.exports = { db } ;
