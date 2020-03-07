@@ -36,7 +36,14 @@ class Database {
 });
 
 async function main() {
-    console.log("i am running");
+    let concatEmployeeName = await db.query(`SELECT CONCAT(first_name, ' ', last_name) AS 'Fullname' FROM employee;`)
+    console.log(concatEmployeeName);
+    let employeeRoleArr = [];
+            for(i = 0; i < concatEmployeeName.length; i++){
+                employeeRoleArr.push(concatEmployeeName[i].Fullname);
+            }
+            console.log(employeeRoleArr);
+
     const employeeTrackerData = await inquirer.prompt([
         {
             type: 'list',
@@ -164,22 +171,17 @@ async function main() {
             console.log(addEmployeeQuerydb);
             
         };
+
         if(employeeTrackerData.select == 'remove employee'){
-            let employeeNameArr = [];
-            let concatEmployeeName = await db.query(`SELECT CONCAT(first_name, ' ', last_name) AS 'Fullname' FROM employee;`)
-            console.log(concatEmployeeName);
-            for(let i=0; i < concatEmployeeName.length; i++){
-                employeeNameArr.push(concatEmployeeName[i].Fullname);
-            }
             const employeedel = await inquirer.prompt([
                 {
                     type: 'list',
-                    name: 'select',
+                    name: 'fullname',
                     choices: employeeNameArr
                 }, 
             ]);
-            console.log(employeedel);
-            let employeedelsplit = employeedel.split(" ");
+            console.log(employeedel.fullname);
+            let employeedelsplit = employeedel.fullname.split(" ");
             let firstNameDelete = (employeedelsplit[0]);
             let lastNameDelete = (employeedelsplit[1]);
             let employeedelQuery =  await db.query( "DELETE FROM employee WHERE first_name = ? & last_name = ?", [firstNameDelete, lastNameDelete]);
@@ -188,6 +190,18 @@ async function main() {
         };
 
         if(employeeTrackerData.select == 'update employee role'){
+            const updateEmployee = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'updatefullname',
+                    choices: employeeRoleArr
+                }, 
+            ]);
+            console.log(updateEmployee.updatefullname);
+            let splitUpdateEmployee = updateEmployee.updatefullname.split(" ");
+            let empFirstName = splitUpdateEmployee[0];
+            let empSecondName = splitUpdateEmployee[1];
+            
             let updateEmployeeRole = await db.query( `SELECT * from employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id;` )
                 console.table(updateRole);
         };
