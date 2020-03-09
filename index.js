@@ -71,7 +71,7 @@ async function main() {
         const emplyeeRoleQuery = await inquirer.prompt([
             {
                 type: 'list',
-                name: 'select',
+                name: 'role',
                 choices: [  'Software Engineer', 
                             'Quality Engineer',
                             'Lead Developer',
@@ -81,31 +81,31 @@ async function main() {
             }, 
         ]);
         
-        if(emplyeeRoleQuery == "Software Engineer"){
+        if(emplyeeRoleQuery.role == "Software Engineer"){
             employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Software Engineer';`)
-            console.log(employeeRoleQuerydb);
+            console.table(employeeRoleQuerydb);
         };
         
-        if(emplyeeRoleQuery == "Quality Engineer"){ 
+        if(emplyeeRoleQuery.role == "Quality Engineer"){ 
             employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Quality Engineer';`)
-            console.log(employeeRoleQuerydb);
+            console.table(employeeRoleQuerydb);
         };
-        if(emplyeeRoleQuery == "Sales Lead"){ 
+        if(emplyeeRoleQuery.role == "Sales Lead"){ 
             employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Sales Lead';`)
-            console.log(employeeRoleQuerydb);
+            console.table(employeeRoleQuerydb);
         };
-        if(emplyeeRoleQuery == "Accountant"){ 
+        if(emplyeeRoleQuery.role == "Accountant"){ 
             employeeRoleQuerydb = await db.query(`SELECT * from Role LEFT JOIN employee ON employee.role_id = Role.id WHERE Role.title = 'Accountant';`)
-            console.log(employeeRoleQuerydb);
+            console.table(employeeRoleQuerydb);
         };
     };
 
     if(employeeTrackerData.select == 'view all employee by department'){
         let employeeDepartmentQuerydb;
-        const employeeDepartmentQuery = await inquirer.prompt([
+        const employeeDepartment = await inquirer.prompt([
                 {
                     type: 'list',
-                    name: 'select',
+                    name: 'department',
                     choices: [  'software development', 
                                 'Quality Testing',
                                 'sales',
@@ -114,29 +114,29 @@ async function main() {
                             ],    
                 }, 
             ]);
-            if(employeeDepartmentQuery == "software development"){
-                employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'software development';`)
-                console.log(employeeDepartmentQuery);
+            if(employeeDepartment.department == "software development"){
+                employeeDepartmentQuery = await db.query (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'software development';`)
+                console.table(employeeDepartmentQuery);
             }
            
-            if(employeeDepartmentQuery == "Quality Testing"){
-                employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Quality Testing';`)
-                console.log(employeeDepartmentQuery);
+            if(employeeDepartment.department == "Quality Testing"){
+                employeeDepartmentQuery = await db.query (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Quality Testing';`)
+                console.table(employeeDepartmentQuery);
             }
             
-            if(employeeDepartmentQuery == "sales"){
-                employeeDepartmentQuery = await db.querry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'sales';`)
-                console.log(employeeDepartmentQuery);
+            if(employeeDepartment.department == "sales"){
+                employeeDepartmentQuery = await db.query (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'sales';`)
+                console.table(employeeDepartmentQuery);
             }
             
-            if(employeeDepartmentQuery == "Accounts"){
-                employeeDepartmentQuery = await db.qerry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Accounts';`)
-                console.log(employeeDepartmentQuery);
+            if(employeeDepartment.department == "Accounts"){
+                employeeDepartmentQuery = await db.query (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'Accounts';`)
+                console.table(employeeDepartmentQuery);
             }
            
-            if(employeeDepartmentQuery == "human resource"){
-                employeeDepartmentQuery = await db.qerry (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'human resource';`)
-                console.log(employeeDepartmentQuery);
+            if(employeeDepartment.department == "human resource"){
+                employeeDepartmentQuery = await db.query (`SELECT department.name, role.title, role.salary, employee.first_name, employee.last_name from department LEFT JOIN role ON role.department_id = department.id LEFT JOIN employee ON employee.role_id = role.id WHERE department.name = 'human resource';`)
+                console.table(employeeDepartmentQuery);
             }   
         };
         // if(employeeTrackerData.select == 'view all employees by manager'){
@@ -145,31 +145,72 @@ async function main() {
         // };
         if(employeeTrackerData.select == 'add employee'){
             let addEmployeeQuerydb;
+            const addDepartment = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'department',
+                    message: 'Whats the department of employee?' ,
+                    choices: [
+                                    'software development', 
+                                    'Quality Testing',
+                                    'sales',
+                                    'Accounts',
+                                    'human resource'
+                    ]  
+                }
+            ]);
+            let addDepartmentQuery = await db.query ("INSERT INTO department (`name`) VALUES(?)", [addDepartment.department]);
+            console.table(addDepartmentQuery);
+            const addRole = await inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'title',
+                    message: 'Whats the role title?'    
+                },
+                {
+                    type: 'input',
+                    name: 'salary',
+                    message: 'Whats the salary of the employee?'    
+                },
+                {
+                    type: 'list',
+                    name: 'deptid',
+                    message: 'Whats the department id?',
+                    choices: [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5
+                    ]
+                },
+            ]);
+            let addRoleQuery = await db.query ("INSERT INTO role (`title`, `salary`, `department_id`) VALUES(?, ?, ?,)", [addRole.title, addRole.salary, addRole.deptid]);
+            console.table(addRoleQuery);
             const addEmployee = await inquirer.prompt([
-            {
-                type: 'input',
-                name: 'firstname',
-                message: 'Whats the first name of the employee?'    
-            }, 
-            {
-                type: 'input',
-                name: 'lastname',
-                message: 'Whats the last name of the employee?'    
-            }, 
-            {
-                type: 'input',
-                name: 'roleid',
-                message: 'Whats the employee role_id?'    
-            }, 
-            {
-                type: 'input',
-                name: 'managerid',
-                message: 'Whats the employee manager_id?'    
-            },
-        ]);
-        addEmployeeQuerydb = await db.qerry ("INSERT INTO employee(`first_name`, `last_name`, `role_id`, `manager_id`)`) VALUES('?','?','?','?')", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid])
-            console.log(addEmployeeQuerydb);
-            
+                {
+                    type: 'input',
+                    name: 'firstname',
+                    message: 'Whats the first name of the employee?'    
+                }, 
+                {
+                    type: 'input',
+                    name: 'lastname',
+                    message: 'Whats the last name of the employee?'    
+                }, 
+                {
+                    type: 'input',
+                    name: 'roleid',
+                    message: 'Whats the employee role_id?'    
+                }, 
+                {
+                    type: 'input',
+                    name: 'managerid',
+                    message: 'Whats the employee manager_id?'    
+                },
+            ]);
+        addEmployeeQuerydb = await db.query ("INSERT INTO employee (`first_name`, `last_name`, `role_id`, `manager_id`) VALUES(?, ?, ?, ?)", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid]);
+            console.table(addEmployeeQuerydb);    
         };
 
         if(employeeTrackerData.select == 'remove employee'){
@@ -180,12 +221,12 @@ async function main() {
                     choices: employeeNameArr
                 }, 
             ]);
-            console.log(employeedel.fullname);
+           
             let employeedelsplit = employeedel.fullname.split(" ");
             let firstNameDelete = (employeedelsplit[0]);
             let lastNameDelete = (employeedelsplit[1]);
             let employeedelQuery =  await db.query( "DELETE FROM employee WHERE first_name = ? & last_name = ?", [firstNameDelete, lastNameDelete]);
-            console.log(employeedelQuery);
+            console.table(employeedelQuery);
            
         };  
 
@@ -202,7 +243,7 @@ async function main() {
                     choices: "type a role to be updated to?"
                 }        
             ]);
-            console.log(updateEmployee.updatefullname);
+        
             let splitUpdateEmployee = updateEmployee.updatefullname.split(" ");
             let empFirstName = splitUpdateEmployee[0];
             let empSecondName = splitUpdateEmployee[1];
@@ -213,7 +254,7 @@ async function main() {
         };
         if(employeeTrackerData.select == 'update employee manager'){
             manageridArr = [];
-            let managerList = await db.querry(`SELECT manager_id AS 'Managerlist' FROM employee; `)
+            let managerList = await db.query(`SELECT manager_id AS 'Managerlist' FROM employee; `)
             for ( i = 0; i < managerList.length; i++  );
             manageridArrr.push(managerList[i].Managerlist)
             const updateManager = await inquirer.prompt([
@@ -233,39 +274,9 @@ async function main() {
             let newManagerid = updateManager.newManager;
             let splitNewManager = updateManager.employeefullname.split(" ");
             let firstNameEmp = splitNewManager[0];
-            let updateManager = await db.query( `UPDATE employee SET manager_id = newManagerid where first_name = "?";` [firstNameEmp] )
-            console.table(updateManager);
+            let updateManagerQuery = await db.query( `UPDATE employee SET manager_id = newManagerid where first_name = "?";` [firstNameEmp] )
+            console.table(updateManagerQuery);
         };
-
-
-    
-
-
-
-    // const departmentData = await inquirer.prompt([
-    //     {
-    //         name: 'department',
-    //         type: 'input',
-    //         message: `What is the name of the department?`
-    //     }
-    // ]);
-    
-    // await db.query( "INSERT INTO Department (`name`) VALUES(?)", [departmentData.name] );   
-
-    // const employeeData = await inquirer.prompt([
-    //     {
-    //         name: 'title',
-    //         type: 'input',
-    //         message: `What is the Role Title?`
-    //     },
-    
-    // ])
-    // await db.query( "INSERT INTO Department (`name`) VALUES(?)", [departmentData.name] );   
-
-    
-
-
-
 }
 main();
 // module.exports = { db } ;
