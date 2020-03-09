@@ -36,13 +36,14 @@ class Database {
 });
 
 async function main() {
+    
     let concatEmployeeName = await db.query(`SELECT CONCAT(first_name, ' ', last_name) AS 'Fullname' FROM employee;`)
     console.log(concatEmployeeName);
-    let employeeRoleArr = [];
+    let employeeNameArr = [];
             for(i = 0; i < concatEmployeeName.length; i++){
-                employeeRoleArr.push(concatEmployeeName[i].Fullname);
+                employeeNameArr.push(concatEmployeeName[i].Fullname);
             }
-            console.log(employeeRoleArr);
+            console.log(employeeNameArr);
 
     const employeeTrackerData = await inquirer.prompt([
         {
@@ -159,13 +160,13 @@ async function main() {
                     ]  
                 }
             ]);
-            let addDepartmentQuery = await db.query ("INSERT INTO department (`name`) VALUES(?)", [addDepartment.department]);
+            let addDepartmentQuery = await db.query ("INSERT INTO department (name) VALUES(?)", [addDepartment.department]);
             console.table(addDepartmentQuery);
             const addRole = await inquirer.prompt([
                 {
                     type: 'input',
                     name: 'title',
-                    message: 'Whats the role title?'    
+                    message: 'Whats the employee role title?'    
                 },
                 {
                     type: 'input',
@@ -185,8 +186,9 @@ async function main() {
                     ]
                 },
             ]);
-            let addRoleQuery = await db.query ("INSERT INTO role (`title`, `salary`, `department_id`) VALUES(?, ?, ?,)", [addRole.title, addRole.salary, addRole.deptid]);
-            console.table(addRoleQuery);
+            let addRoleQuery = await db.query("INSERT INTO role (title, salary, department_id) VALUES(?, ?, ?)", [addRole.title, addRole.salary, addRole.deptid]);
+            let addRoleQueryTable = await db.query(`SELECT * FROM Role`);
+            console.table(addRoleQueryTable);
             const addEmployee = await inquirer.prompt([
                 {
                     type: 'input',
@@ -209,8 +211,9 @@ async function main() {
                     message: 'Whats the employee manager_id?'    
                 },
             ]);
-        addEmployeeQuerydb = await db.query ("INSERT INTO employee (`first_name`, `last_name`, `role_id`, `manager_id`) VALUES(?, ?, ?, ?)", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid]);
-            console.table(addEmployeeQuerydb);    
+        addEmployeeQuerydb = await db.query ("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)", [addEmployee.firstname, addEmployee.lastname, addEmployee.roleid, addEmployee.managerid]);
+        let addEmployeeQuerydbTable = await db.query(`SELECT * FROM employee`);
+        console.table(addEmployeeQuerydbTable);
         };
 
         if(employeeTrackerData.select == 'remove employee'){
@@ -223,10 +226,11 @@ async function main() {
             ]);
            
             let employeedelsplit = employeedel.fullname.split(" ");
-            let firstNameDelete = (employeedelsplit[0]);
-            let lastNameDelete = (employeedelsplit[1]);
-            let employeedelQuery =  await db.query( "DELETE FROM employee WHERE first_name = ? & last_name = ?", [firstNameDelete, lastNameDelete]);
-            console.table(employeedelQuery);
+            let firstNameDelete = employeedelsplit[0];
+            let lastNameDelete = employeedelsplit[1];
+            let employeedelQuery =  await db.query( "DELETE FROM employee WHERE first_name = ? AND last_name = ?", [firstNameDelete, lastNameDelete]);
+            let employeeDelQueryTable = await db.query( `SELECT * FROM employee`);
+            console.table(employeeDelQueryTable);
            
         };  
 
@@ -249,7 +253,8 @@ async function main() {
             let empSecondName = splitUpdateEmployee[1];
             
             let updateRole = await db.query(`UPDATE role left join employee ON employee.role_id = Role.id SET role.title = "updateEmployee.newRole" where first_name = "?",` [empFirstName])
-            console.table(updateRole);
+            let updateRoleTable = await db.query(`SELECT * FROM role`)
+            console.table(updateRoleTable);
             
         };
         if(employeeTrackerData.select == 'update employee manager'){
@@ -275,7 +280,8 @@ async function main() {
             let splitNewManager = updateManager.employeefullname.split(" ");
             let firstNameEmp = splitNewManager[0];
             let updateManagerQuery = await db.query( `UPDATE employee SET manager_id = newManagerid where first_name = "?";` [firstNameEmp] )
-            console.table(updateManagerQuery);
+            let updateManagerQueryTable = await db.query(`SELECT * FROM employee`)
+            console.table(updateManagerQueryTable);
         };
 }
 main();
